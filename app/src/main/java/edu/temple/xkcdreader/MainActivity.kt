@@ -1,7 +1,10 @@
 package edu.temple.xkcdreader
 
+import android.content.Intent
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.Settings
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -22,6 +25,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var titleTextView: TextView
     lateinit var altTextView: TextView
     lateinit var comicImageView: ImageView
+    lateinit var button: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +36,7 @@ class MainActivity : AppCompatActivity() {
         titleTextView = findViewById(R.id.titleTextView)
         altTextView = findViewById(R.id.altTextView)
         comicImageView = findViewById(R.id.comicImageView)
+        button = findViewById(R.id.button)
 
         fetchComicButton.setOnClickListener{
             lifecycleScope.launch(Dispatchers.Main) {
@@ -39,6 +44,24 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        button.setOnClickListener {
+            val intent = Intent(Settings.ACTION_APP_OPEN_BY_DEFAULT_SETTINGS,
+                Uri.parse("package:${packageName}"))
+            startActivity(intent)
+        }
+
+        // 'intent' is a property in activity
+        intent.action?.run {
+            if (this == Intent.ACTION_VIEW) {
+                intent.data?.let {
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        // Fix this part on your own
+//                        it.path.
+//                        fetchComic(it.path!!.substring(4))
+                    }
+                }
+            }
+        }
     }
 
     suspend fun fetchComic(comicId: String) {
